@@ -25,9 +25,5 @@ def login():
     user = db.execute(query).fetchone()
     db.close()
 
-    if user:
-        return "Login successful"
-    return "Invalid credentials"
-
-if __name__ == "__main__":
-    app.run(debug=True)
+    if __name__ == "__main__":
+    app.run(debug=False)
