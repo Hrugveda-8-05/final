@@ -9,17 +9,14 @@ def get_db():
 @app.route("/login")
 def login():
     username = request.args.get("username")
-    password = request.args.get("password")
+    import sqlite3
 
-    db = get_db()
-
-    # VULNERABLE: user input is directly concatenated into SQL
-    query = (
-        "SELECT * FROM users WHERE username = '"
-        + username
-        + "' AND password = '"
-        + password
-        + "'"
+def login(username, password):
+    db = sqlite3.connect('mydb.db')
+    query = "SELECT * FROM users WHERE username = ? AND password = ?"
+    user = db.execute(query, (username, password)).fetchone()
+    db.close()
+    return user
     )
 
     user = db.execute(query).fetchone()
