@@ -41,16 +41,18 @@ def read_file(filename):
 def hash_password(password):
     return hashlib.md5(password.encode()).hexdigest()
 
-# 7. SQL Injection (parameterized missing)
-def delete_user(user_id):
-    conn = sqlite3.connect("users.db")
-    cursor = conn.cursor()
-    cursor.execute("DELETE FROM users WHERE id = " + str(user_id))
-    conn.commit()
+import sqlite3
+import subprocess
+import os
 
-# 8. OS command with user input
+conn = sqlite3.connect("users.db")
+cursor = conn.cursor()
+cursor.execute("DELETE FROM users WHERE id = ?", (user_id,))
+conn.commit()
+conn.close()
+
 def ping_host(host):
-    os.system("ping -c 1 " + host)
+    subprocess.run(["ping", "-c", "1", host], check=True)
 
 
 # DevSecOps Agent Fix:
