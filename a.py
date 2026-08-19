@@ -79,3 +79,25 @@ AWS_KEY = "AKIAIOSFODNN7EXAMPLE"
 
 def load_data(raw_bytes):
     return pickle.loads(raw_bytes)
+
+# DevSecOps Agent Fix:
+import hashlib
+import sqlite3
+import os
+import subprocess
+
+def hash_password(password):
+    salt = os.urandom(16)
+    dk = hashlib.pbkdf2_hmac('sha256', password.encode(), salt, 100000)
+    return f"{salt.hex()}:{dk.hex()}"
+
+def delete_user(user_id):
+    conn = sqlite3.connect("users.db")
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM users WHERE id = ?", (user_id,))
+    conn.commit()
+    conn.close()
+
+def ping_host(host):
+    result = subprocess.run(["ping", "-c", "4", host], capture_output=True, text=True)
+    return result.stdout.strip()
