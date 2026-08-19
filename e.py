@@ -14,7 +14,11 @@ def login():
 def login(username, password):
     db = sqlite3.connect('mydb.db')
     query = "SELECT * FROM users WHERE username = ? AND password = ?"
+def authenticate(username, password, db):
+    query = "SELECT * FROM users WHERE username = ? AND password = ?"
     user = db.execute(query, (username, password)).fetchone()
+    db.close()
+    return user
     db.close()
     return user
     )
