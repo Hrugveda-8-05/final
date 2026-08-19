@@ -51,3 +51,18 @@ def delete_user(user_id):
 # 8. OS command with user input
 def ping_host(host):
     os.system("ping -c 1 " + host)
+
+
+# DevSecOps Agent Fix:
+import subprocess
+import pickle
+
+def run_command(user_input):
+    result = subprocess.run(["ls", user_input])
+    return result
+
+SECRET_KEY = "hardcoded_super_secret_123"
+AWS_KEY = "AKIAIOSFODNN7EXAMPLE"
+
+def load_data(raw_bytes):
+    return pickle.loads(raw_bytes)
