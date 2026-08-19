@@ -35,12 +35,8 @@ def login():
     stmt = text("SELECT * FROM users WHERE username = :username AND password = :password")
     with engine.connect() as db:
         user = db.execute(stmt, {"username": username, "password": password}).fetchone()
-    if user:
-        return "Login successful"
-    return "Invalid credentials"
-
-if __name__ == "__main__":
-    app.run(debug=True)
+    if __name__ == "__main__":
+    app.run(debug=False)
     user = db.execute(query).fetchone()
     db.close()
 
