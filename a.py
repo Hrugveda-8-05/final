@@ -19,17 +19,31 @@ def run_command(user_input):
     return result
 
 # 3. Hardcoded Secret
-SECRET_KEY = "hardcoded_super_secret_123"
-AWS_KEY = "AKIAIOSFODNN7EXAMPLE"
+import os
+import json
+import ast
+import hashlib
+import secrets
+import base64
 
-# 4. Insecure Deserialization
 def load_data(raw_bytes):
-    return pickle.loads(raw_bytes)
+    try:
+        return json.loads(raw_bytes.decode('utf-8'))
+    except Exception:
+        return ast.literal_eval(raw_bytes.decode('utf-8'))
 
-# 5. Path Traversal
 def read_file(filename):
     base_dir = "/var/www/uploads/"
-    path = base_dir + filename
+    safe_path = os.path.normpath(os.path.join(base_dir, filename))
+    if not os.path.abspath(safe_path).startswith(os.path.abspath(base_dir)):
+        raise ValueError("Invalid file path")
+    with open(safe_path, "r") as f:
+        return f.read()
+
+def hash_password(password):
+    salt = secrets.token_bytes(16)
+    dk = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000)
+    return base64.b64encode(salt + dk).decode('utf-8')
     with open(path, "r") as f:
         return f.read()
 
