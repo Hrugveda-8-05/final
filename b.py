@@ -10,3 +10,11 @@ def get_user(username):
 def run_command(user_input):
     result = subprocess.run("ls " + user_input, shell=True)
     return result
+
+
+# DevSecOps Agent Fix:
+import subprocess
+
+def run_command(user_input):
+    result = subprocess.run(["ls", user_input])
+    return result
