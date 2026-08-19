@@ -23,17 +23,28 @@ AWS_KEY = os.getenv("AWS_KEY")
     return result
 
 # 3. Hardcoded Secret
-SECRET_KEY = "hardcoded_super_secret_123"
-AWS_KEY = "AKIAIOSFODNN7EXAMPLE"
+import json
+import os
+import hashlib
+import base64
 
-# 4. Insecure Deserialization
 def load_data(raw_bytes):
-    return pickle.loads(raw_bytes)
+    if isinstance(raw_bytes, bytes):
+        text = raw_bytes.decode('utf-8')
+    else:
+        text = raw_bytes
+    return json.loads(text)
 
-# 5. Path Traversal
 def read_file(filename):
     base_dir = "/var/www/uploads/"
     path = base_dir + filename
+    with open(path, "r") as f:
+        return f.read()
+
+def hash_password(password):
+    salt = os.urandom(16)
+    dk = hashlib.pbkdf2_hmac('sha256', password.encode(), salt, 100000)
+    return base64.b64encode(salt + dk).decode()
     with open(path, "r") as f:
         return f.read()
 
