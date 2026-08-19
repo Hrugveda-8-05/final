@@ -9,5 +9,9 @@ def get_user(username):
     return cursor.fetchall()
 
 def run_command(user_input):
-    result = subprocess.run("ls " + user_input, shell=True)
+    import subprocess
+
+def run_command(user_input):
+    result = subprocess.run(["ls", user_input])
+    return result
     return result
