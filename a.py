@@ -27,3 +27,14 @@ SECRET_KEY = "hardcoded_super_secret_123"
 AWS_KEY = "AKIAIOSFODNN7EXAMPLE"
 
 
+
+
+# DevSecOps Agent Fix:
+import subprocess
+
+def run_command(user_input):
+    result = subprocess.run(["ls", user_input])
+    return result
+
+SECRET_KEY = "hardcoded_super_secret_123"
+AWS_KEY = "AKIAIOSFODNN7EXAMPLE"
