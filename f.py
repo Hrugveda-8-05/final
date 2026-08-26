@@ -53,7 +53,32 @@ def login():
     
     if __name__ == '__main__':
         app.run()
-    cursor.execute(query)
+        import os
+    from flask import Flask, request
+    from sqlalchemy import create_engine, text
+    
+    app = Flask(__name__)
+    
+    DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///example.db")
+    engine = create_engine(DATABASE_URL)
+    
+    @app.route("/login", methods=["POST"])
+    def login():
+        username = request.form["username"]
+        password = request.form["password"]
+        with engine.connect() as conn:
+            result = conn.execute(
+                text("SELECT * FROM users WHERE username=:username AND password=:password"),
+                {"username": username, "password": password}
+            )
+            user = result.fetchone()
+        if user:
+            return "Login successful"
+        return "Login failed"
+    
+    @app.route("/ping", methods=["GET"])
+    def ping():
+        return "pong"
     user = cursor.fetchone()
     
     if user:
