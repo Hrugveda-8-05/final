@@ -17,15 +17,88 @@ def get_db():
 # SQL Injection - CWE-89
 @app.route("/login", methods=["POST"])
 def login():
-    username = request.form.get("username")
+        @app.route("/login", methods=["POST"])
+    def login():
+        username = request.form.get("username")
+                def login():
+            username = request.form.get("username")
+            password = request.form.get("password")
+            
+            db = get_db()
+            cursor = db.cursor()
+            
+            query = "SELECT * FROM users WHERE username=? AND password=?"
+            cursor.execute(query, (username, password))
+            user = cursor.fetchone()
+            
+            if user:
+                return user
+        db = get_db()
+        cursor = db.cursor()
+        query = "SELECT * FROM users WHERE username=? AND password=?"
+        cursor.execute(query, (username, password))
+        user = cursor.fetchone()
     password = request.form.get("password")
     
     db = get_db()
     cursor = db.cursor()
     
     # Vulnerable: direct string interpolation
-    query = f"SELECT * FROM users WHERE username='{username}' AND password='{password}'"
-    cursor.execute(query)
+        from flask import Flask, request
+    import sqlite3
+    
+    app = Flask(__name__)
+    
+    def get_db():
+        conn = sqlite3.connect('example.db')
+        conn.row_factory = sqlite3.Row
+        return conn
+    
+    @app.route('/login', methods=['POST'])
+    def login():
+        username = request.form['username']
+        password = request.form['password']
+        conn = get_db()
+        cursor = conn.cursor()
+        query = "SELECT * FROM users WHERE username=? AND password=?"
+        cursor.execute(query, (username, password))
+        user = cursor.fetchone()
+        if user:
+            return "Login successful"
+        return "Login failed"
+    
+    @app.route("/ping", methods=["GET"])
+    def ping():
+        return "pong"
+    
+    if __name__ == '__main__':
+        app.run()
+        import os
+    from flask import Flask, request
+    from sqlalchemy import create_engine, text
+    
+    app = Flask(__name__)
+    
+    DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///example.db")
+    engine = create_engine(DATABASE_URL)
+    
+    @app.route("/login", methods=["POST"])
+    def login():
+        username = request.form["username"]
+        password = request.form["password"]
+        with engine.connect() as conn:
+            result = conn.execute(
+                text("SELECT * FROM users WHERE username=:username AND password=:password"),
+                {"username": username, "password": password}
+            )
+            user = result.fetchone()
+        if user:
+            return "Login successful"
+        return "Login failed"
+    
+    @app.route("/ping", methods=["GET"])
+    def ping():
+        return "pong"
     user = cursor.fetchone()
     
     if user:
@@ -39,7 +112,31 @@ def ping():
     host = request.args.get("host")
     
     # Vulnerable: user input directly in shell command
-    result = subprocess.run(f"ping -c 1 {host}", shell=True, capture_output=True, text=True)
+        import subprocess
+    import os
+    from flask import Flask, request, abort, send_file
+    
+    app = Flask(__name__)
+    
+    def ping_host(host):
+        result = subprocess.run(["ping", "-c", "1", host], capture_output=True, text=True)
+        return result.stdout
+    
+    @app.route("/file", methods=["GET"])
+    def read_file():
+        filename = request.args.get("name")
+        if not filename:
+            abort(400)
+        base_dir = "/var/www/files"
+        safe_path = os.path.abspath(os.path.join(base_dir, filename))
+        if not safe_path.startswith(os.path.abspath(base_dir) + os.sep):
+            abort(403)
+        if not os.path.isfile(safe_path):
+            abort(404)
+        return send_file(safe_path)
+    
+    if __name__ == "__main__":
+        app.run()
     return result.stdout
 
 
@@ -60,8 +157,39 @@ def search():
     query = request.args.get("q", "")
     
     # Vulnerable: user input directly in HTML
-    template = f"<h1>Results for: {query}</h1>"
-    return render_template_string(template)
+        from flask import Flask, request, render_template_string
+    
+    app = Flask(__name__)
+    
+    @app.route('/search')
+    def search():
+        query = request.args.get('q', '')
+        template = "<h1>Results for: {{ query }}</h1>"
+        return render_template_string(template, query=query)
+    
+    if __name__ == "__main__":
+                from flask import Flask
+        
+        app = Flask(__name__)
+        
+        @app.route('/')
+        def index():
+            return "Hello, World!"
+        
+        if __name__ == "__main__":
+            app.run(debug=False)
+        from flask import Flask, request, render_template_string
+    
+    app = Flask(__name__)
+    
+    @app.route('/search')
+    def search():
+        query = request.args.get('q', '')
+        template = "<h1>Results for: {{ query }}</h1>"
+        return render_template_string(template, query=query)
+    
+    if __name__ == "__main__":
+        app.run(debug=True)
 
 
 if __name__ == "__main__":
