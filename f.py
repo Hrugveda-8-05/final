@@ -24,7 +24,35 @@ def login():
     cursor = db.cursor()
     
     # Vulnerable: direct string interpolation
-    query = f"SELECT * FROM users WHERE username='{username}' AND password='{password}'"
+        from flask import Flask, request
+    import sqlite3
+    
+    app = Flask(__name__)
+    
+    def get_db():
+        conn = sqlite3.connect('example.db')
+        conn.row_factory = sqlite3.Row
+        return conn
+    
+    @app.route('/login', methods=['POST'])
+    def login():
+        username = request.form['username']
+        password = request.form['password']
+        conn = get_db()
+        cursor = conn.cursor()
+        query = "SELECT * FROM users WHERE username=? AND password=?"
+        cursor.execute(query, (username, password))
+        user = cursor.fetchone()
+        if user:
+            return "Login successful"
+        return "Login failed"
+    
+    @app.route("/ping", methods=["GET"])
+    def ping():
+        return "pong"
+    
+    if __name__ == '__main__':
+        app.run()
     cursor.execute(query)
     user = cursor.fetchone()
     
