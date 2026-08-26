@@ -61,7 +61,20 @@ def search():
     
     # Vulnerable: user input directly in HTML
     template = f"<h1>Results for: {query}</h1>"
-    return render_template_string(template)
+        from flask import Flask, request, render_template_string
+    from markupsafe import escape
+    
+    app = Flask(__name__)
+    
+    @app.route('/search')
+    def search():
+        query = request.args.get('q', '')
+        template = f"<h1>Results for: {escape(query)}</h1>"
+        return render_template_string(template)
+    
+    if __name__ == "__main__":
+                if __name__ == "__main__":
+            app.run()
 
 
 if __name__ == "__main__":
