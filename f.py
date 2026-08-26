@@ -17,7 +17,15 @@ def get_db():
 # SQL Injection - CWE-89
 @app.route("/login", methods=["POST"])
 def login():
-    username = request.form.get("username")
+        @app.route("/login", methods=["POST"])
+    def login():
+        username = request.form.get("username")
+        password = request.form.get("password")
+        db = get_db()
+        cursor = db.cursor()
+        query = "SELECT * FROM users WHERE username=? AND password=?"
+        cursor.execute(query, (username, password))
+        user = cursor.fetchone()
     password = request.form.get("password")
     
     db = get_db()
