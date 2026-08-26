@@ -73,7 +73,8 @@ def search():
         return render_template_string(template)
     
     if __name__ == "__main__":
-        app.run(debug=True)
+                if __name__ == "__main__":
+            app.run()
 
 
 if __name__ == "__main__":
