@@ -39,7 +39,30 @@ def ping():
     host = request.args.get("host")
     
     # Vulnerable: user input directly in shell command
-    result = subprocess.run(f"ping -c 1 {host}", shell=True, capture_output=True, text=True)
+        import subprocess
+    import os
+    from flask import Flask, request, abort
+    
+    app = Flask(__name__)
+    
+    def ping_host(host):
+        result = subprocess.run(["ping", "-c", "1", host], capture_output=True, text=True)
+        return result.stdout
+    
+    @app.route("/file", methods=["GET"])
+    def read_file():
+        filename = request.args.get("name")
+        if not filename:
+            abort(400)
+        base_dir = "/var/www/files"
+        safe_path = os.path.abspath(os.path.join(base_dir, filename))
+        if not safe_path.startswith(os.path.abspath(base_dir) + os.sep):
+            abort(400)
+        try:
+            with open(safe_path, "r") as f:
+                return f.read()
+        except FileNotFoundError:
+            abort(404)
     return result.stdout
 
 
