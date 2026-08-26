@@ -20,7 +20,19 @@ def login():
         @app.route("/login", methods=["POST"])
     def login():
         username = request.form.get("username")
-        password = request.form.get("password")
+                def login():
+            username = request.form.get("username")
+            password = request.form.get("password")
+            
+            db = get_db()
+            cursor = db.cursor()
+            
+            query = "SELECT * FROM users WHERE username=? AND password=?"
+            cursor.execute(query, (username, password))
+            user = cursor.fetchone()
+            
+            if user:
+                return user
         db = get_db()
         cursor = db.cursor()
         query = "SELECT * FROM users WHERE username=? AND password=?"
