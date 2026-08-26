@@ -23,5 +23,9 @@ def get_user(username):
     return cursor.fetchall()
 
 def run_command(user_input):
-    result = subprocess.run("ls " + user_input, shell=True)
+        import subprocess
+    
+    def get_ls_output(user_input):
+        result = subprocess.run(["ls", user_input], capture_output=True, text=True)
+        return result.stdout
     return result
